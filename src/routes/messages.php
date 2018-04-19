@@ -5,7 +5,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 $app = new \Slim\App;
 
-// Allow CROS
+// Allow CORS
 $app->options('/{routes:.+}', function ($request, $response, $args) {
   return $response;
 });
@@ -32,7 +32,7 @@ $app->get('/api/messages', function(Request $request, Response $response){
     $stmt = $db->query($sql);
     $messages = $stmt->fetchAll(PDO::FETCH_OBJ);
     $db = null;
-    echo json_encode($messages);
+    $response->getBody()->write(json_encode($messages));
 
   } catch(PDOException $e) {
     echo '{"error" : {"text": '.$e->getMessage().'}';
@@ -55,7 +55,7 @@ $app->get('/api/message/{id}', function(Request $request, Response $response){
     $stmt = $db->query($sql);
     $message = $stmt->fetch(PDO::FETCH_OBJ);
     $db = null;
-    echo json_encode($message);
+    $response->getBody()->write(json_encode($message));
 
   } catch(PDOException $e) {
     echo '{"error" : {"text": '.$e->getMessage().'}';
